@@ -1,0 +1,4 @@
+node_modules/*
+package-lock.json
+jest_0/*
+yarn-error.log
