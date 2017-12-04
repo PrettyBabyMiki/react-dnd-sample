@@ -1,4 +1,5 @@
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 
 
@@ -50,12 +51,46 @@ const foodTarget = {
       // console.log('monitor index', monitor.getItem().index);
       // console.log('component', component);
 
-      const draggedElementIndex = monitor.getItem().index;
-      const hoverElementIndex = props.index;
+    const draggedElementIndex = monitor.getItem().index;
+    const hoverElementIndex = props.index;
+
+      // Determine rectangle on screen
+		const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+
+		// Get vertical middle
+		const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+		// Determine mouse position
+		const clientOffset = monitor.getClientOffset();
+
+		// Get pixels to the top
+		const hoverClientY = clientOffset.y - hoverBoundingRect.top
+
+
+    // Dragging downwards
+		if (draggedElementIndex < hoverElementIndex && hoverClientY < hoverMiddleY) {
+			return
+		}
+
+		// Dragging upwards
+		if (draggedElementIndex > hoverElementIndex && hoverClientY > hoverMiddleY) {
+			return
+		}
+
 
 
 
       props.pushHoveredFood(draggedElementIndex, hoverElementIndex);
+
+
+
+      // Note: we're mutating the monitor item here!
+  		// Generally it's better to avoid mutations,
+  		// but it's good here for the sake of performance
+  		// to avoid expensive index searches.
+      monitor.getItem().index = hoverElementIndex;
+
+
   },
 };
 
@@ -107,7 +142,7 @@ class Food extends React.Component {
      connectDragSource,
      connectDropTarget,
 } = this.props
-    console.log('isDragging', isDragging);
+
     const opacity = isDragging ? 0 : 1;
 
     return connectDragSource(
