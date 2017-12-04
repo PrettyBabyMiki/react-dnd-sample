@@ -1,20 +1,30 @@
-import { DELETE_FOOD } from '../constants/actions';
+import { DELETE_FOOD, PUSH_FOOD } from '../constants/actions';
 
 const initState = [
   {
     name: 'orange',
+    id: 0,
+    opacity: 1,
   },
   {
     name: 'apple',
+    id: 1,
+    opacity: 1,
   },
   {
     name: 'cheese',
+    id: 2,
+    opacity: 1,
   },
   {
     name: 'pie',
+    id: 3,
+    opacity: 1,
   },
   {
     name: 'pizza',
+    id: 4,
+    opacity: 1,
   }
 ]
 
@@ -27,6 +37,13 @@ export default function availabelFoods(state = initState, action){
     return [
       action.payload
     ];
+  }
+
+  if (action.type === PUSH_FOOD) {
+
+    return  [
+      ...state
+    ]
   }
 
   return state;

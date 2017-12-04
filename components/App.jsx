@@ -4,6 +4,7 @@ import {  DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
+import {withRouter} from 'react-router';
 // import queryString from 'query-string';
 
 
@@ -24,37 +25,35 @@ import * as AvailabelFoodActionCreators  from '../actions/availabel_foods';
 
 
 
-
-
-
-
-
-
-
  class App extends React.Component {
 
-  constructor(props){
-    super(props);
+   constructor(props) {
+     super(props);
 
 
-
-  }
+   }
 
 
 
 
   render(){
+
+
     return (
       <div>
         {this.props.availabelFoods.map((food, index, arr) => {
-          return(
-            <Food value={food.name} />
-          )
-        })}
+
+
+            return (
+              <Food key={food.id} value={arr[index].name} id={food.id} index={index}
+                pushHoveredFood={this.props.availabelFoodsActions.pushHoveredFood}
+              />
+            );
+          }
+        )}
 
 
 
-        
 
       </div>
     );
@@ -74,7 +73,6 @@ const mapDispatchToProps = (dispatch) => ({
   availabelFoodsActions: bindActionCreators(AvailabelFoodActionCreators, dispatch),
 });
 
-App = DragDropContext(HTML5Backend)(App);
-App = connect(mapStateToProps, mapDispatchToProps)(App)
+App = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 
-export default App;
+export default DragDropContext(HTML5Backend)(App);

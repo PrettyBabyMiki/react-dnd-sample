@@ -26,7 +26,6 @@ const foodSource = {
   beginDrag(props) {
 
 
-
     return {
       id:   props.id,
       index: props.index,
@@ -37,6 +36,8 @@ const foodSource = {
 
 
 function collect(connect, monitor) {
+
+
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
@@ -46,7 +47,15 @@ function collect(connect, monitor) {
 
 const foodTarget = {
   hover(props, monitor, component) {
-      console.log('index', monitor.getItem().index);
+      // console.log('monitor index', monitor.getItem().index);
+      console.log('component', component);
+
+      const draggedElementIndex = monitor.getItem().index;
+      const hoverElementIndex = props.index;
+
+      component.decoratedComponentInstance.setOpacity(0.3)
+
+      props.pushHoveredFood(draggedElementIndex, hoverElementIndex);
   },
 };
 
@@ -64,12 +73,28 @@ function connectTarget(connect){
 
 class Food extends React.Component {
 
-  constructor(props){
+
+  constructor(props) {
     super(props);
 
+    this.state = {
+      opacity: 1,
+    }
 
+    this.setOpacity = this.setOpacity.bind(this);
   }
 
+
+
+
+
+
+  setOpacity(val) {
+
+    this.setState({
+      opacity: val,
+    })
+  }
 
 
 
@@ -84,7 +109,7 @@ class Food extends React.Component {
 
     return connectDragSource(
               connectDropTarget(
-                <div className={foodStyle}>
+                <div className={foodStyle} style={{opacity: this.state.opacity}}>
                   {this.props.value}
                 </div>
               ),
